@@ -1,0 +1,4 @@
+py-cord
+tzdata
+python-dotenv
+requests

@@ -1,0 +1,16 @@
+{
+    "BotTimezone": "America/New_York",
+    "BotActivity": "your stream",
+    "BotAdminRole": "RS-admin",
+    "AlertChannelName": "twitch-notifs",
+    "AlertRole": "ResidentStalkers",
+    "AllowDiscordEmbed": "false",
+    "DeleteOldAlerts": "true",
+    "OfflineCheckInterval": "1m",
+    "OnlineCheckInterval": "30s",
+    "AlertCooldown": "12h",
+    "Streams":[
+      ["barbarousking", "Marbles on Stream"],
+      ["aurateur", "Pools, Hot Tubs, and Beaches"]
+    ]
+}
