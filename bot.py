@@ -257,7 +257,7 @@ async def watch(stream, index):
                 else:
                     link_string = "".join(["<https://twitch.tv/", str(stream[0]), ">"])
                 await alert_channel.send(
-                    f'\n {alert_role.mention} \n {stream[0]} is playing {stream[1]}! Get in here! \n {link_string}',
+                    f'\n {alert_role.mention}\n{stream[0]} is playing {stream[1]}! Get in here!\n{link_string}',
                     allowed_mentions=allowed_mentions)
                 print(f'watcher-{index}: Alert message sent! Sleeping for {AlertCooldown}')
                 await asyncio.sleep(AlertCooldownSeconds)
