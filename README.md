@@ -36,4 +36,4 @@ Additionaly you can use this command to get a new auth token from Twitch:
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
 ## Docker Images
-[DockerHub](https://hub.docker.com/repository/docker/erkston/residentstalker/general)
+[DockerHub](https://hub.docker.com/r/erkston/residentstalker)
