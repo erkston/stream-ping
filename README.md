@@ -10,6 +10,7 @@ With either method you need to set the following environment variables:
 The bot requires the following permissions: Send Messages, Manage Messages, Read Message History, Embed Links. It also requires permission to mention roles.
 The server should also have a dedicated role for the @notification mention (see config below).
 ## Configuration
+Rename config.json.example to config.json and edit settings as needed:
 - BotTimezone - Timezone used for timestamps in console output. Will use this timezone instead of system time
 - BotActivity* - Actvity the bot should be "Watching" in its Discord presence
 - BotAdminRole - Name of the role whose members can change config options via /rs
@@ -36,4 +37,4 @@ Additionaly you can use this command to get a new auth token from Twitch:
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
 ## Docker Images
-[DockerHub](https://hub.docker.com/r/erkston/residentstalker)
+See [DockerHub](https://hub.docker.com/r/erkston/residentstalker) for installation instructions
