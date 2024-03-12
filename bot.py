@@ -32,7 +32,7 @@ TwitchClientID = str(os.getenv("TWITCHCLIENTID"))
 TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 
 # declaring other stuff
-version = "v0.0.1"
+version = "v0.0.2"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
 rsCommandList = ["BotActivity", "AllowDiscordEmbed", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
                  "AlertCooldown", "TwitchReAuth"]
