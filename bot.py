@@ -241,12 +241,12 @@ async def watch(stream, index):
             islive = await is_user_live(stream[0], index)
         while islive:
             print(f'watcher-{index}: {stream[0]} live! Checking their game...')
-            gamematch = await does_game_match(stream, index)
+            gamematch = await does_game_match(stream)
             while gamematch == 0:
                 print(
                     f'watcher-{index}: {stream[0]} is live but not playing {stream[1]}, sleeping for {OnlineCheckInterval} before next check')
                 await asyncio.sleep(OnlineCheckIntervalSeconds)
-                gamematch = await does_game_match(stream, index)
+                gamematch = await does_game_match(stream)
             while gamematch == 1:
                 print(
                     f'watcher-{index}: {stream[0]} live and playing {stream[1]}! Sending alert (AllowDiscordEmbed = {AllowDiscordEmbed})')
@@ -277,7 +277,7 @@ async def is_user_live(username, index):
         return True
 
 
-async def does_game_match(stream, index):
+async def does_game_match(stream):
     global headers
     endpoint = 'https://api.twitch.tv/helix/streams'
     params = {'user_login': stream[0]}
