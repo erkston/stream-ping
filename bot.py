@@ -50,6 +50,7 @@ OfflineCheckIntervalSeconds = convert_to_seconds(OfflineCheckInterval)
 OnlineCheckIntervalSeconds = convert_to_seconds(OnlineCheckInterval)
 AlertCooldownSeconds = convert_to_seconds(AlertCooldown)
 
+
 # cleanup functions to delete any messages and remove all users from lobby roles
 class Bot(discord.Bot):
     async def cleanup(self):
@@ -188,7 +189,6 @@ async def on_ready():
                                                         name=f"{BotActivity}"))
     print('Updated discord presence')
 
-    print('------------------------------------------------------')
     if distutils.util.strtobool(DeleteOldAlerts):
         print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking for old alert messages to delete...')
         async for message in alert_channel.history(limit=25):
