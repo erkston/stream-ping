@@ -51,8 +51,7 @@ OnlineCheckIntervalSeconds = convert_to_seconds(OnlineCheckInterval)
 AlertCooldownSeconds = convert_to_seconds(AlertCooldown)
 
 
-# cleanup functions to delete any messages and remove all users from lobby roles
-class Bot(discord.Bot):
+class BOT(discord.Bot):
     async def cleanup(self):
         print('------------------------------------------------------')
         print(f'Shutting down {bot.user}...')
@@ -76,7 +75,7 @@ class Bot(discord.Bot):
 
 allowed_mentions = discord.AllowedMentions(roles=True)
 intents = discord.Intents.default()
-bot = Bot(intents=intents)
+bot = BOT(intents=intents)
 
 
 @bot.command(name="rs", description="Change ResidentStalker options")
@@ -141,7 +140,6 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
         print(f'Received command from {ctx.author.display_name} who does not have admin role "{bot_admin_role}"!')
 
 
-# run once at bot start
 @bot.event
 async def on_ready():
     print('------------------------------------------------------')
