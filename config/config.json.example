@@ -5,6 +5,7 @@
     "AlertChannelName": "twitch-notifs",
     "AlertRole": "ResidentStalkers",
     "AllowDiscordEmbed": "false",
+    "EnableStartupMessage": "true",
     "DeleteOldAlerts": "true",
     "OldMessagesToCheck": "50",
     "OfflineCheckInterval": "1m",

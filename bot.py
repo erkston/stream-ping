@@ -20,6 +20,7 @@ BotAdminRole = config['BotAdminRole']
 AlertChannelName = config['AlertChannelName']
 AlertRole = config['AlertRole']
 AllowDiscordEmbed = config['AllowDiscordEmbed']
+EnableStartupMessage = config['EnableStartupMessage']
 DeleteOldAlerts = config['DeleteOldAlerts']
 OldMessagesToCheck = config['OldMessagesToCheck']
 OfflineCheckInterval = config['OfflineCheckInterval']
@@ -216,6 +217,9 @@ async def main():
 
 async def watch(stream, index):
     print(f'watcher-{index} spawned for {stream}')
+    if distutils.util.strtobool(EnableStartupMessage):
+        print(f'watcher-{index}: EnableStartupMessage is {EnableStartupMessage}, sending discord message')
+        await alert_channel.send(f"I'm watching to see if {stream[0]} is playing {stream[1]}")
     islive = await is_user_live(stream[0], index)
     while True:
         while not islive:
