@@ -55,18 +55,7 @@ AlertCooldownSeconds = convert_to_seconds(AlertCooldown)
 class BOT(discord.Bot):
     async def cleanup(self):
         print('------------------------------------------------------')
-        print(f'Shutting down {bot.user}...')
-        if distutils.util.strtobool(DeleteOldAlerts):
-            print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking for old alert messages to delete...')
-            async for message in alert_channel.history(limit=25):
-                if message.author == bot.user:
-                    print(f'Found old message from {bot.user}, deleting it')
-                    await message.delete()
-                else:
-                    print(f'Found old message from {message.author}, leaving it alone')
-            print('Finished checking for old messages')
-        else:
-            print(f'DeleteOldAlerts is {DeleteOldAlerts}, not deleting any old messages...')
+        await delete_old_messages()
 
     async def close(self):
         await self.cleanup()
@@ -189,18 +178,11 @@ async def on_ready():
                                                         name=f"{BotActivity}"))
     print('Updated discord presence')
 
-    if distutils.util.strtobool(DeleteOldAlerts):
-        print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking {OldMessagesToCheck} messages for old alerts to delete...')
-        async for message in alert_channel.history(limit=int(OldMessagesToCheck)):
-            if message.author == bot.user:
-                print(f'Found old message from {bot.user}, deleting it')
-                await message.delete()
-        print('Finished checking for old messages')
-        print('------------------------------------------------------')
-    else:
-        print(f'DeleteOldAlerts is {DeleteOldAlerts}, not deleting any old messages...')
+    await delete_old_messages()
 
     await twitch_auth()
+
+    print('------------------------------------------------------')
 
     await main()
 
@@ -290,6 +272,20 @@ async def does_game_match(stream):
         return 0
     else:
         return 1
+
+
+async def delete_old_messages():
+    global DeleteOldAlerts
+    global OldMessagesToCheck
+    if distutils.util.strtobool(DeleteOldAlerts):
+        print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking {OldMessagesToCheck} messages for old alerts to delete...')
+        async for message in alert_channel.history(limit=int(OldMessagesToCheck)):
+            if message.author == bot.user:
+                print(f'Found old message from {bot.user}, deleting it')
+                await message.delete()
+        print('Finished checking for old messages')
+    else:
+        print(f'DeleteOldAlerts is {DeleteOldAlerts}, not deleting any old messages...')
 
 
 bot.run(DiscordBotToken)
