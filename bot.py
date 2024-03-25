@@ -88,6 +88,7 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
         global OnlineCheckIntervalSeconds
         global AlertCooldown
         global AlertCooldownSeconds
+        global token_expiry_time
         if setting.casefold() == "botactivity":
             global BotActivity
             BotActivity = value
@@ -129,7 +130,7 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
 
         elif setting.casefold() == "twitchreauth":
             await twitch_auth()
-            await ctx.respond(f'New Twitch Auth token retrieved')
+            await ctx.respond(f'New Twitch Auth token retrieved, expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
             print(f'Twitch token renewed by {ctx.author.display_name}')
 
         else:
@@ -208,6 +209,7 @@ async def on_ready():
 async def twitch_auth():
     print('Beginning Twitch Authorization...')
     global headers
+    global token_expiry_time
     authendpoint = 'https://id.twitch.tv/oauth2/token'
     params = {'client_id': TwitchClientID,
               'client_secret': TwitchClientSecret,
