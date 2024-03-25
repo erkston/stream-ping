@@ -34,7 +34,7 @@ TwitchClientID = str(os.getenv("TWITCHCLIENTID"))
 TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 
 # declaring other stuff
-version = "v0.0.3"
+version = "v0.0.4"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
 laststatus = []
 statusmessage = []
