@@ -255,7 +255,10 @@ async def is_user_live(username, index):
     global headers
     endpoint = 'https://api.twitch.tv/helix/streams'
     params = {'user_login': username}
-    response = requests.get(endpoint, headers=headers, params=params)
+    try:
+        response = requests.get(endpoint, headers=headers, params=params)
+    except Exception as exc:
+        print(f'Exception: "{exc}" while checking live status for {username}!')
     data = response.json()['data']
     if len(data) == 0:
         return False
@@ -268,7 +271,10 @@ async def does_game_match(stream):
     global headers
     endpoint = 'https://api.twitch.tv/helix/streams'
     params = {'user_login': stream[0]}
-    response = requests.get(endpoint, headers=headers, params=params)
+    try:
+        response = requests.get(endpoint, headers=headers, params=params)
+    except Exception as exc:
+        print(f'Exception: "{exc}" while checking game for {stream}!')
     data = response.json()['data']
     if len(data) == 0:
         return 2
