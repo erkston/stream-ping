@@ -36,8 +36,10 @@ TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 # declaring other stuff
 version = "v0.0.3"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
+laststatus = []
+statusmessage = []
 rsCommandList = ["BotActivity", "AllowDiscordEmbed", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
-                 "AlertCooldown", "TwitchReAuth"]
+                 "AlertCooldown", "TwitchReAuth", "Status"]
 
 
 # convert config time intervals into seconds
@@ -80,6 +82,7 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
         global AlertCooldown
         global AlertCooldownSeconds
         global token_expiry_time
+        global laststatus
         if setting.casefold() == "botactivity":
             global BotActivity
             BotActivity = value
@@ -123,6 +126,15 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
             await twitch_auth()
             await ctx.respond(f'New Twitch Auth token retrieved, expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
             print(f'Twitch token renewed by {ctx.author.display_name}')
+
+        elif setting.casefold() == "status":
+            statusmessage.clear()
+            statusmessage.append("Current status of all watchers:")
+            for i in range(len(Streams)):
+                statusmessage.append(f'{Streams[i][0]}/{Streams[i][1]} {laststatus[i]}')
+            statusmessagejoin = '\n'.join(statusmessage)
+            await ctx.respond(f'{statusmessagejoin}')
+            print(f'Status queried by {ctx.author.display_name}')
 
         else:
             await ctx.respond("I don't have that setting, please try again")
@@ -213,9 +225,13 @@ async def main():
     async with asyncio.TaskGroup() as task_group:
         for i in range(len(Streams)):
             task_group.create_task(watch(Streams[i], i))
+            await asyncio.sleep(3)
 
 
 async def watch(stream, index):
+    global laststatus
+    if len(laststatus) < index+1:
+        laststatus.append("initilized")
     print(f'watcher-{index} spawned for {stream}')
     if distutils.util.strtobool(EnableStartupMessage):
         print(f'watcher-{index}: EnableStartupMessage is {EnableStartupMessage}, sending discord message')
@@ -224,6 +240,7 @@ async def watch(stream, index):
     while True:
         while not islive:
             print(f'watcher-{index}: {stream[0]} is not live, sleeping for {OfflineCheckInterval} before next check')
+            laststatus[index] = f"not live, checking status every {OfflineCheckInterval}"
             await asyncio.sleep(OfflineCheckIntervalSeconds)
             islive = await is_user_live(stream[0], index)
         while islive:
@@ -232,6 +249,7 @@ async def watch(stream, index):
             while gamematch == 0:
                 print(
                     f'watcher-{index}: {stream[0]} is live but not playing {stream[1]}, sleeping for {OnlineCheckInterval} before next check')
+                laststatus[index] = f"live but not playing {stream[1]}, checking status every {OnlineCheckInterval}"
                 await asyncio.sleep(OnlineCheckIntervalSeconds)
                 gamematch = await does_game_match(stream)
             while gamematch == 1:
@@ -245,6 +263,7 @@ async def watch(stream, index):
                     f'\n {alert_role.mention}\n{stream[0]} is playing {stream[1]}! Get in here!\n{link_string}',
                     allowed_mentions=allowed_mentions)
                 print(f'watcher-{index}: Alert message sent! Sleeping for {AlertCooldown}')
+                laststatus[index] = f"was detected as live and playing {stream[1]}, alert was sent and currently in {AlertCooldown} cooldown"
                 await asyncio.sleep(AlertCooldownSeconds)
             if gamematch == 2:
                 print(f'watcher-{index}: {stream[0]} was live but stopped streaming...')

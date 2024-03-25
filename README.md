@@ -33,8 +33,9 @@ Examples:
 - /rs OfflineCheckInterval 2m
 - /rs AlertCooldown 12h
 
-Additionaly you can use this command to get a new auth token from Twitch:
-- /rs TwitchReAuth anyvalue
+Additional commands:
+- /rs TwitchReAuth anyvalue - this will fetch a new auth token from twitch
+- /rs Status anyvalue - this will send you the current status for all monitored streams
 
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
