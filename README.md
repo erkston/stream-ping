@@ -18,6 +18,7 @@ Rename config.json.example to config.json and edit settings as needed:
 - AlertRole - The Role name the bot should mention when alerting
 - AllowDiscordEmbed* - The alert message contains a link to the twitch stream, this setting controls whether or not the message will be shown with a large discord embed and thumbnail
 - DeleteOldAlerts* - When starting up and shutting down the bot removes its old messages unless this is false
+- OldMessagesToCheck - Number of recent messages the bot will check in AlertChannelName for deletion
 - OfflineCheckInterval* - Interval the bot will check the stream status while the channel is not live. Must have units attached (1m, 10m, 1h, etc) 
 - OnlineCheckInterval* - Interval the bot will check the stream status while the channel is live. Must have units attached (10s, 30s, 1m, etc) 
 - AlertCooldown* - After alerting the bot will wait for this amount of time before beginning to check the stream status again. Must have units attached (3h, 12h, 2d, etc) 

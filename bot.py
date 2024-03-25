@@ -21,6 +21,7 @@ AlertChannelName = config['AlertChannelName']
 AlertRole = config['AlertRole']
 AllowDiscordEmbed = config['AllowDiscordEmbed']
 DeleteOldAlerts = config['DeleteOldAlerts']
+OldMessagesToCheck = config['OldMessagesToCheck']
 OfflineCheckInterval = config['OfflineCheckInterval']
 OnlineCheckInterval = config['OnlineCheckInterval']
 AlertCooldown = config['AlertCooldown']
@@ -189,13 +190,11 @@ async def on_ready():
     print('Updated discord presence')
 
     if distutils.util.strtobool(DeleteOldAlerts):
-        print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking for old alert messages to delete...')
-        async for message in alert_channel.history(limit=25):
+        print(f'DeleteOldAlerts is {DeleteOldAlerts}, Checking {OldMessagesToCheck} messages for old alerts to delete...')
+        async for message in alert_channel.history(limit=int(OldMessagesToCheck)):
             if message.author == bot.user:
                 print(f'Found old message from {bot.user}, deleting it')
                 await message.delete()
-            else:
-                print(f'Found old message from {message.author}, leaving it alone')
         print('Finished checking for old messages')
         print('------------------------------------------------------')
     else:

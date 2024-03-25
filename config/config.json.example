@@ -6,6 +6,7 @@
     "AlertRole": "ResidentStalkers",
     "AllowDiscordEmbed": "false",
     "DeleteOldAlerts": "true",
+    "OldMessagesToCheck": "50",
     "OfflineCheckInterval": "1m",
     "OnlineCheckInterval": "30s",
     "AlertCooldown": "12h",
