@@ -130,6 +130,7 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
 
         elif setting.casefold() == "status":
             statusmessage.clear()
+            statusmessage.append('Twitch Auth token expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
             statusmessage.append("Current status of all watchers:")
             for i in range(len(Streams)):
                 statusmessage.append(f'{Streams[i][0]}/{Streams[i][1]} {laststatus[i]}')
