@@ -248,7 +248,7 @@ async def main():
             await asyncio.sleep(3)
 
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=5)
 async def am_i_alive():
     global AlertCooldownSeconds
     global laststatus_time
