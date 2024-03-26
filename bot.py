@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import distutils
 import discord
+from discord.ext import tasks
 import dotenv
 import json
 import os
@@ -21,6 +22,7 @@ AlertChannelName = config['AlertChannelName']
 AlertRole = config['AlertRole']
 AllowDiscordEmbed = config['AllowDiscordEmbed']
 EnableStartupMessage = config['EnableStartupMessage']
+AlertAdminOnError = config['EnableStartupMessage']
 DeleteOldAlerts = config['DeleteOldAlerts']
 OldMessagesToCheck = config['OldMessagesToCheck']
 OfflineCheckInterval = config['OfflineCheckInterval']
@@ -39,7 +41,7 @@ Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'
 laststatus_time = datetime.now(timezone.utc)
 laststatus = []
 statusmessage = []
-rsCommandList = ["BotActivity", "AllowDiscordEmbed", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
+rsCommandList = ["BotActivity", "AllowDiscordEmbed", "AlertAdminOnError", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
                  "AlertCooldown", "TwitchReAuth", "Status"]
 
 
@@ -123,6 +125,12 @@ async def rs(ctx, setting: discord.Option(autocomplete=discord.utils.basic_autoc
             await ctx.respond(f'AlertCooldown has been set to {AlertCooldown}')
             print(f'AlertCooldown changed to {AlertCooldown} ({AlertCooldownSeconds}s) by {ctx.author.display_name}')
 
+        elif setting.casefold() == "alertadminonerror":
+            global AlertAdminOnError
+            AlertAdminOnError = value
+            await ctx.respond(f'AlertAdminOnError has been set to {AlertAdminOnError}')
+            print(f'AlertAdminOnError changed to {AlertAdminOnError} by {ctx.author.display_name}')
+
         elif setting.casefold() == "twitchreauth":
             await twitch_auth()
             await ctx.respond(f'New Twitch Auth token retrieved, expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
@@ -152,8 +160,7 @@ async def on_ready():
     print(f'erkston/residentstalker {version}')
     systemtime = datetime.now()
     bottime = datetime.now(ZoneInfo(BotTimezone))
-    print(
-        f'System Time: {systemtime.strftime("%Y-%m-%d %H:%M:%S")} Bot Time: {bottime.strftime("%Y-%m-%d %H:%M:%S")} (Timezone: {BotTimezone})')
+    print(f'System Time: {systemtime.strftime("%Y-%m-%d %H:%M:%S")} Bot Time: {bottime.strftime("%Y-%m-%d %H:%M:%S")} (Timezone: {BotTimezone})')
     print('Config options:')
     print(f'BotActivity: {BotActivity}')
     print(f'BotAdminRole: {BotAdminRole}')
@@ -161,6 +168,7 @@ async def on_ready():
     print(f'AlertRole: {AlertRole}')
     print(f'AllowDiscordEmbed: {AllowDiscordEmbed}')
     print(f'EnableStartupMessage: {EnableStartupMessage}')
+    print(f'AlertAdminOnError: {AlertAdminOnError}')
     print(f'DeleteOldAlerts: {DeleteOldAlerts}')
     print(f'OldMessagesToCheck: {OldMessagesToCheck}')
     print(f'OfflineCheckInterval: {OfflineCheckInterval}')
@@ -199,7 +207,13 @@ async def on_ready():
 
     await delete_old_messages()
 
-    await twitch_auth()
+    print('------------------------------------------------------')
+
+    twitch_auth_renew.start()
+    await asyncio.sleep(3)
+
+    am_i_alive.start()
+    await asyncio.sleep(3)
 
     print('------------------------------------------------------')
 
@@ -207,7 +221,7 @@ async def on_ready():
 
 
 async def twitch_auth():
-    print('Beginning Twitch Authorization...')
+    print('twitchauth: Beginning Twitch Authorization...')
     global headers
     global token_expiry_time
     authendpoint = 'https://id.twitch.tv/oauth2/token'
@@ -219,7 +233,7 @@ async def twitch_auth():
     access_token = authcall.json()['access_token']
 
     token_expiry_time = datetime.now(ZoneInfo(BotTimezone)) + timedelta(seconds=authcall.json()['expires_in'])
-    print(f'Access token acquired! Expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
+    print(f'twitchauth: Access token acquired! Expires at ' + token_expiry_time.strftime("%Y-%m-%d %H:%M:%S"))
 
     headers = {
         'Client-ID': TwitchClientID,
@@ -232,6 +246,30 @@ async def main():
         for i in range(len(Streams)):
             task_group.create_task(watch(Streams[i], i))
             await asyncio.sleep(3)
+
+
+@tasks.loop(minutes=1)
+async def am_i_alive():
+    global AlertCooldownSeconds
+    global laststatus_time
+    print('amialive: Beginning alive check...')
+    now = datetime.now(timezone.utc)
+    if (now - laststatus_time).seconds > AlertCooldownSeconds:
+        print(f'amialive: Last update time ({laststatus_time.strftime("%Y-%m-%d %H:%M:%S")}) is longer ago than AlertCooldown ({AlertCooldown}), I think something may be wrong!')
+        if distutils.util.strtobool(AlertAdminOnError):
+            print(f'amialive: AlertAdminOnError is {AlertAdminOnError}, sending discord message to bot admins')
+            await alert_channel.send(f"\n {bot_admin_role.mention}\n I haven't been able to check Twitch in a while, please check my console!", allowed_mentions=allowed_mentions)
+        else:
+            print(f'amialive: AlertAdminOnError is {AlertAdminOnError}, not sending discord alert')
+        await asyncio.sleep(AlertCooldownSeconds)
+    else:
+        print(f'amialive: Last update time ({laststatus_time.strftime("%Y-%m-%d %H:%M:%S")}) is more recent than AlertCooldown ({AlertCooldown})')
+
+
+@tasks.loop(hours=24)
+async def twitch_auth_renew():
+    await twitch_auth()
+    print('twitchauth: Twitch auth renew completed, will renew in 24 hours')
 
 
 async def watch(stream, index):
@@ -289,6 +327,9 @@ async def is_user_live(username, index):
         response = requests.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking live status for {username}!')
+        if distutils.util.strtobool(AlertAdminOnError):
+            await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
+                    allowed_mentions=allowed_mentions)
     data = response.json()['data']
     if len(data) == 0:
         return False

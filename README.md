@@ -18,6 +18,7 @@ Rename config.json.example to config.json and edit settings as needed:
 - AlertRole - The Role name the bot should mention when alerting
 - AllowDiscordEmbed* - The alert message contains a link to the twitch stream, this setting controls whether or not the message will be shown with a large discord embed and thumbnail
 - EnableStartupMessage - If true will send a Discord message for each stream it's monitoring
+- AlertAdminOnError* - Will try to send a discord message that mentions BotAdminRole when the last update is longer than AlertCooldown or when an exception occurs
 - DeleteOldAlerts* - When starting up and shutting down the bot removes its old messages unless this is false
 - OldMessagesToCheck - Number of recent messages the bot will check in AlertChannelName for deletion
 - OfflineCheckInterval* - Interval the bot will check the stream status while the channel is not live. Must have units attached (1m, 10m, 1h, etc) 

@@ -6,6 +6,7 @@
     "AlertRole": "ResidentStalkers",
     "AllowDiscordEmbed": "false",
     "EnableStartupMessage": "true",
+    "AlertAdminOnError": "true",
     "DeleteOldAlerts": "true",
     "OldMessagesToCheck": "50",
     "OfflineCheckInterval": "1m",
