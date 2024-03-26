@@ -1,7 +1,7 @@
 # ResidentStalker
 import asyncio
 import datetime
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import distutils
 import discord
@@ -36,6 +36,7 @@ TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 # declaring other stuff
 version = "v0.0.4"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
+laststatus_time = datetime.now(timezone.utc)
 laststatus = []
 statusmessage = []
 rsCommandList = ["BotActivity", "AllowDiscordEmbed", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
@@ -234,8 +235,10 @@ async def main():
 
 async def watch(stream, index):
     global laststatus
+    global laststatus_time
     if len(laststatus) < index+1:
-        laststatus.append("initilized")
+        laststatus_time = datetime.now(timezone.utc)
+        laststatus.append(f'initilized (Updated <t:' + str(int(laststatus_time.timestamp())) + ':R>)')
     print(f'watcher-{index} spawned for {stream}')
     if distutils.util.strtobool(EnableStartupMessage):
         print(f'watcher-{index}: EnableStartupMessage is {EnableStartupMessage}, sending discord message')
@@ -244,7 +247,8 @@ async def watch(stream, index):
     while True:
         while not islive:
             print(f'watcher-{index}: {stream[0]} is not live, sleeping for {OfflineCheckInterval} before next check')
-            laststatus[index] = f"not live, checking status every {OfflineCheckInterval}"
+            laststatus_time = datetime.now(timezone.utc)
+            laststatus[index] = f'not live, {OfflineCheckInterval} check (Updated <t:' + str(int(laststatus_time.timestamp())) + ':R>)'
             await asyncio.sleep(OfflineCheckIntervalSeconds)
             islive = await is_user_live(stream[0], index)
         while islive:
@@ -253,7 +257,8 @@ async def watch(stream, index):
             while gamematch == 0:
                 print(
                     f'watcher-{index}: {stream[0]} is live but not playing {stream[1]}, sleeping for {OnlineCheckInterval} before next check')
-                laststatus[index] = f"live but not playing {stream[1]}, checking status every {OnlineCheckInterval}"
+                laststatus_time = datetime.now(timezone.utc)
+                laststatus[index] = f'live but playing different game, {OnlineCheckInterval} check (Updated <t:' + str(int(laststatus_time.timestamp())) + ':R>)'
                 await asyncio.sleep(OnlineCheckIntervalSeconds)
                 gamematch = await does_game_match(stream)
             while gamematch == 1:
@@ -267,7 +272,8 @@ async def watch(stream, index):
                     f'\n {alert_role.mention}\n{stream[0]} is playing {stream[1]}! Get in here!\n{link_string}',
                     allowed_mentions=allowed_mentions)
                 print(f'watcher-{index}: Alert message sent! Sleeping for {AlertCooldown}')
-                laststatus[index] = f"was detected as live and playing {stream[1]}, alert was sent and currently in {AlertCooldown} cooldown"
+                laststatus_time = datetime.now(timezone.utc)
+                laststatus[index] = f'alert was sent and currently in {AlertCooldown} cooldown (Updated <t:' + str(int(laststatus_time.timestamp())) + ':R>)'
                 await asyncio.sleep(AlertCooldownSeconds)
             if gamematch == 2:
                 print(f'watcher-{index}: {stream[0]} was live but stopped streaming...')
