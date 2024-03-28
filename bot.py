@@ -324,6 +324,9 @@ async def is_user_live(username, index):
         response = requests.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking live status for {username}!')
+        await bot.change_presence(status=discord.Status.idle,
+                                  activity=discord.Activity(type=discord.ActivityType.streaming,
+                                                            name='my death to console'))
         if distutils.util.strtobool(AlertAdminOnError):
             await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
                     allowed_mentions=allowed_mentions)
@@ -343,6 +346,9 @@ async def does_game_match(stream):
         response = requests.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking game for {stream}!')
+        await bot.change_presence(status=discord.Status.idle,
+                                  activity=discord.Activity(type=discord.ActivityType.streaming,
+                                                            name='my death to console'))
         if distutils.util.strtobool(AlertAdminOnError):
             await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
                     allowed_mentions=allowed_mentions)
