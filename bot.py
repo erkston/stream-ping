@@ -11,6 +11,7 @@ import json
 import os
 import re
 import requests
+from requests.adapters import HTTPAdapter, Retry
 
 with open("config/config.json", "r") as jsonfile:
     config = json.load(jsonfile)
@@ -41,6 +42,9 @@ laststatus = []
 statusmessage = []
 rsCommandList = ["BotActivity", "AllowDiscordEmbed", "AlertAdminOnError", "DeleteOldAlerts", "OfflineCheckInterval", "OnlineCheckInterval",
                  "AlertCooldown", "TwitchReAuth", "Status"]
+
+retry_strategy = Retry(total=5, backoff_factor=2, status_forcelist=[429, 500, 501, 502, 503], allowed_methods=["GET", "POST"])
+adapter = HTTPAdapter(max_retries=retry_strategy)
 
 
 def convert_to_seconds(s):
@@ -220,13 +224,16 @@ async def on_ready():
 async def twitch_auth():
     print('twitchauth: Beginning Twitch Authorization...')
     global headers
+    global adapter
     global token_expiry_time
     authendpoint = 'https://id.twitch.tv/oauth2/token'
     params = {'client_id': TwitchClientID,
               'client_secret': TwitchClientSecret,
               'grant_type': 'client_credentials'
               }
-    authcall = requests.post(url=authendpoint, params=params)
+    session = requests.Session()
+    session.mount("https://", adapter)
+    authcall = session.post(url=authendpoint, params=params)
     access_token = authcall.json()['access_token']
 
     token_expiry_time = datetime.now(ZoneInfo(BotTimezone)) + timedelta(seconds=authcall.json()['expires_in'])
@@ -321,10 +328,13 @@ async def watch(stream, index):
 
 async def is_user_live(username, index):
     global headers
+    global adapter
     endpoint = 'https://api.twitch.tv/helix/streams'
     params = {'user_login': username}
     try:
-        response = requests.get(endpoint, headers=headers, params=params)
+        session = requests.Session()
+        session.mount("https://", adapter)
+        response = session.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking live status for {username}!')
         await bot.change_presence(status=discord.Status.idle,
@@ -343,10 +353,13 @@ async def is_user_live(username, index):
 
 async def does_game_match(stream):
     global headers
+    global adapter
     endpoint = 'https://api.twitch.tv/helix/streams'
     params = {'user_login': stream[0]}
     try:
-        response = requests.get(endpoint, headers=headers, params=params)
+        session = requests.Session()
+        session.mount("https://", adapter)
+        response = session.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking game for {stream}!')
         await bot.change_presence(status=discord.Status.idle,
