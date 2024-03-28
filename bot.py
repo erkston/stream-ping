@@ -260,9 +260,7 @@ async def am_i_alive():
     now = datetime.now(timezone.utc)
     if (now - laststatus_time).seconds > AlertCooldownSeconds:
         print(f'amialive: Last update time ({laststatus_time.strftime("%Y-%m-%d %H:%M:%S")}) is longer ago than AlertCooldown ({AlertCooldown}), I think something may be wrong!')
-        await bot.change_presence(status=discord.Status.idle,
-                                  activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name='nothing'))
+        await discord_presence_on_error()
         if distutils.util.strtobool(AlertAdminOnError):
             print(f'amialive: AlertAdminOnError is {AlertAdminOnError}, sending discord message to bot admins')
             await alert_channel.send(f"\n {bot_admin_role.mention}\n I haven't been able to check Twitch in a while, please check my console!", allowed_mentions=allowed_mentions)
@@ -337,9 +335,7 @@ async def is_user_live(username, index):
         response = session.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking live status for {username}!')
-        await bot.change_presence(status=discord.Status.idle,
-                                  activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name='nothing'))
+        await discord_presence_on_error()
         if distutils.util.strtobool(AlertAdminOnError):
             await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
                     allowed_mentions=allowed_mentions)
@@ -362,9 +358,7 @@ async def does_game_match(stream):
         response = session.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking game for {stream}!')
-        await bot.change_presence(status=discord.Status.idle,
-                                  activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name='nothing'))
+        await discord_presence_on_error()
         if distutils.util.strtobool(AlertAdminOnError):
             await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
                     allowed_mentions=allowed_mentions)
@@ -390,5 +384,11 @@ async def delete_old_messages():
     else:
         print(f'DeleteOldAlerts is {DeleteOldAlerts}, not deleting any old messages...')
 
+
+async def discord_presence_on_error():
+    await bot.change_presence(status=discord.Status.idle,
+                              activity=discord.Activity(type=discord.ActivityType.watching,
+                                                        name='nothing'))
+    print(f'Updated Discord presence to reflect error')
 
 bot.run(DiscordBotToken)
