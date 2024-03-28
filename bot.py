@@ -12,7 +12,6 @@ import os
 import re
 import requests
 
-# importing config and reading variables
 with open("config/config.json", "r") as jsonfile:
     config = json.load(jsonfile)
 BotTimezone = config['BotTimezone']
@@ -35,7 +34,6 @@ DiscordBotToken = str(os.getenv("DISCORDBOTTOKEN"))
 TwitchClientID = str(os.getenv("TWITCHCLIENTID"))
 TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 
-# declaring other stuff
 version = "v0.0.5"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
 laststatus_time = datetime.now(timezone.utc)
@@ -45,7 +43,6 @@ rsCommandList = ["BotActivity", "AllowDiscordEmbed", "AlertAdminOnError", "Delet
                  "AlertCooldown", "TwitchReAuth", "Status"]
 
 
-# convert config time intervals into seconds
 def convert_to_seconds(s):
     return int(timedelta(**{
         Units.get(m.group('unit').lower(), 'seconds'): float(m.group('val'))
@@ -61,6 +58,7 @@ AlertCooldownSeconds = convert_to_seconds(AlertCooldown)
 class BOT(discord.Bot):
     async def cleanup(self):
         print('------------------------------------------------------')
+        print('Beginning shutdown...')
         await delete_old_messages()
 
     async def close(self):
@@ -203,7 +201,6 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online,
                               activity=discord.Activity(type=discord.ActivityType.watching,
                                                         name=f"{BotActivity}"))
-    print('Updated discord presence')
 
     await delete_old_messages()
 
