@@ -346,6 +346,9 @@ async def does_game_match(stream):
         response = requests.get(endpoint, headers=headers, params=params)
     except Exception as exc:
         print(f'Exception: "{exc}" while checking game for {stream}!')
+        if distutils.util.strtobool(AlertAdminOnError):
+            await alert_channel.send(f'\n {bot_admin_role.mention}\n Exception occured, please check my console!',
+                    allowed_mentions=allowed_mentions)
     data = response.json()['data']
     if len(data) == 0:
         return 2
