@@ -319,6 +319,7 @@ async def watch(stream, index):
                 laststatus_time = datetime.now(timezone.utc)
                 laststatus[index] = f'alert was sent and currently in {AlertCooldown} cooldown (Updated <t:' + str(int(laststatus_time.timestamp())) + ':R>)'
                 await asyncio.sleep(AlertCooldownSeconds)
+                gamematch = await does_game_match(stream)
             if gamematch == 2:
                 print(f'watcher-{index}: {stream[0]} was live but stopped streaming...')
                 islive = False
