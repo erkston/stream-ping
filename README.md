@@ -8,7 +8,7 @@ With either method you need to set the following environment variables:
 - TWITCHCLIENTSECRET
 ## Discord Server set-up
 The bot requires the following permissions: Send Messages, Manage Messages, Read Message History, Embed Links. It also requires permission to mention roles.
-The server should also have a dedicated role for the @notification mention (see config below).
+The server should also have a dedicated role for the @notification mention (see config below). The role must be mentionable by the bot either via role settings or bot permissions.
 ## Configuration
 Rename config.json.example to config.json and edit settings as needed:
 - BotTimezone - Timezone used for timestamps in console output. Will use this timezone instead of system time
