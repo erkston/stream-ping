@@ -1,9 +1,9 @@
 {
     "BotTimezone": "America/New_York",
     "BotActivity": "your stream",
-    "BotAdminRole": "RS-admin",
+    "BotAdminRole": "HFT-admin",
     "AlertChannelName": "twitch-notifs",
-    "AlertRole": "ResidentStalkers",
+    "AlertRole": "twitch-alerts",
     "AllowDiscordEmbed": "false",
     "EnableStartupMessage": "true",
     "AlertAdminOnError": "true",

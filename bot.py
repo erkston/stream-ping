@@ -1,4 +1,4 @@
-# ResidentStalker
+# hyperion-for-twitch
 import asyncio
 import datetime
 from datetime import datetime, timedelta, timezone
