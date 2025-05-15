@@ -1,4 +1,4 @@
-# ResidentStalker
+# hyperion-for-twitch
 A Discord bot designed to check if a Twitch streamer is playing a specific game, and if so send a Discord notification.
 ## Discord and Twitch Developer set-up
 From Discord Developer Portal you will need your bot token. From the Twitch Developer console you will need your Client ID and Client Secret. These can be provided via a .env file (see .env.example) or directly using docker ENV or similar.
