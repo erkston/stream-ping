@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: erkston/residentstalker
+          images: erkston/hyperion-for-twitch
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -30,5 +30,5 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }} , erkston/residentstalker:latest
+          tags: ${{ steps.meta.outputs.tags }} , erkston/hyperion-for-twitch:latest
           labels: ${{ steps.meta.outputs.labels }}
