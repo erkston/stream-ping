@@ -35,7 +35,7 @@ DiscordBotToken = str(os.getenv("DISCORDBOTTOKEN"))
 TwitchClientID = str(os.getenv("TWITCHCLIENTID"))
 TwitchClientSecret = str(os.getenv("TWITCHCLIENTSECRET"))
 
-version = "v0.0.7"
+version = "v0.0.8"
 Units = {'s': 'seconds', 'm': 'minutes', 'h': 'hours', 'd': 'days', 'w': 'weeks'}
 laststatus_time = datetime.now(timezone.utc)
 laststatus = []
