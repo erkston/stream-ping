@@ -1,4 +1,4 @@
-# hyperion-for-twitch
+# stream-ping
 import asyncio
 import datetime
 from datetime import datetime, timedelta, timezone

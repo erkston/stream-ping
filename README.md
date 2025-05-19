@@ -1,4 +1,4 @@
-# hyperion-for-twitch
+## stream-ping
 A Discord bot designed to check if a Twitch streamer is playing a specific game, and if so send a Discord notification.
 ## Discord and Twitch Developer set-up
 From Discord Developer Portal you will need your bot token. From the Twitch Developer console you will need your Client ID and Client Secret. These can be provided via a .env file (see .env.example) or directly using docker ENV or similar.
@@ -41,4 +41,4 @@ Additional commands:
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
 ## Docker Images
-See [DockerHub](https://hub.docker.com/r/erkston/hyperion-for-twitch) for installation instructions
+See [DockerHub](https://hub.docker.com/r/erkston/stream-ping) for installation instructions
