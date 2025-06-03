@@ -41,4 +41,4 @@ Additional commands:
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
 ## Docker Images
-See [DockerHub](https://hub.docker.com/r/erkston/stream-ping) for installation instructions
+See [DockerHub](https://hub.docker.com/r/erkston/stream-ping)
