@@ -6,6 +6,7 @@ With either method you need to set the following environment variables:
 - DISCORDBOTTOKEN
 - TWITCHCLIENTID
 - TWITCHCLIENTSECRET
+
 See [compose.yml.example](compose.yml.example)
 ### Discord Server set-up
 The bot requires the following permissions: Send Messages, Manage Messages, Read Message History, Embed Links. It also requires permission to mention roles.
