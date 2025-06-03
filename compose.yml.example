@@ -1,0 +1,9 @@
+services:
+  srteam-ping:
+    image: erkston/stream-ping:latest
+    container_name: stream-ping
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /opt/stream-ping:/app/config
