@@ -6,8 +6,6 @@ With either method you need to set the following environment variables:
 - DISCORDBOTTOKEN
 - TWITCHCLIENTID
 - TWITCHCLIENTSECRET
-
-See [compose.yml.example](compose.yml.example)
 ### Discord Server set-up
 The bot requires the following permissions: Send Messages, Manage Messages, Read Message History, Embed Links. It also requires permission to mention roles.
 The server should also have a dedicated role for the @notification mention (see config below). The role must be mentionable by the bot either via role settings or bot permissions.
@@ -42,5 +40,5 @@ Additional commands:
 
 Setting names are not case-sensitive, however the setting values need to follow the same format as in the config or things will start breaking.
 Cooldowns/timers need to have units (s, m, or h) and boolean options are true/false.
-### Docker Images
-[DockerHub](https://hub.docker.com/r/erkston/stream-ping)
+### Docker Setup
+See [compose.yml.example](compose.yml.example) and [DockerHub](https://hub.docker.com/r/erkston/stream-ping)
